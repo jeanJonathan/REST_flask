@@ -10,3 +10,20 @@ services:
         environment:
             PORT: 5000
             FLASK_DEBUG: 1
+    mariadb:
+        image: mariadb:10.5
+        container_name: mariadb
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: mydatabase
+            MYSQL_USER: maria
+            MYSQL_PASSWORD: maria
+        volumes:
+            - ./mariadb:/var/lib/mysql
+    adminer:
+        image: adminer
+        container_name: adminer
+        depends_on:
+            - mariadb
+        ports:
+            - 8080:8080
