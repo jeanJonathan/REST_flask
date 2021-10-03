@@ -10,19 +10,19 @@ def welcome():
 
 
 @app.route('/regions')
-def regions():
+def get_regions():
     # return a json
     return jsonify({'status': 'api working regions'})
 
 
 @app.route('/departements')
-def departements():
+def get_departements():
     # return a json
     return jsonify({'status': 'api working departements'})
 
 
 @app.route('/villes')
-def villes():
+def get_villes():
     # return a json
     return jsonify({'status': 'api working villes'})
 
