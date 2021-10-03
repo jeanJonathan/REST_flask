@@ -6,7 +6,25 @@ app = Flask(__name__)
 @app.route('/')
 def welcome():
     # return a json
-    return jsonify({'status': 'api working'})
+    return jsonify({'status': 'api working welcome'})
+
+
+@app.route('/regions')
+def regions():
+    # return a json
+    return jsonify({'status': 'api working regions'})
+
+
+@app.route('/departements')
+def departements():
+    # return a json
+    return jsonify({'status': 'api working departements'})
+
+
+@app.route('/villes')
+def villes():
+    # return a json
+    return jsonify({'status': 'api working villes'})
 
 
 if __name__ == '__main__':
