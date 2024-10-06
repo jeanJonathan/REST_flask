@@ -182,6 +182,48 @@ def delete_departement(code_dpt):
     return "", 204
 
 
+
+""" ################## VILLES ##################
+    #############################################"""
+
+"""Endpoints pour les VILLES opérations CRUD"""
+
+# GET pour récupérer toutes les villes d'un département
+@app.route('/departements/<int:dept_id>/villes')
+def get_villes(dept_id):
+    villes = execute_query("SELECT * FROM villes WHERE departement_id = ?", (dept_id,))
+    return jsonify(villes)
+
+# POST pour ajouter une nouvelle ville à un département
+@app.route('/departements/<int:dept_id>/villes', methods=['POST'])
+def add_ville(dept_id):
+    data = request.get_json()  # Assure-toi de recevoir les données en JSON
+    nom = data.get('nom')
+    code_postal = data.get('code_postal')  # Utilise 'code_postal' au lieu de 'code'
+    if not all([nom, code_postal]):  # Vérifie que ni 'nom' ni 'code_postal' ne sont None
+        return jsonify({"error": "Données manquantes pour l'ajout de la ville"}), 400
+
+    try:
+        execute_query("INSERT INTO villes (nom, code_postal, departement_id) VALUES (?, ?, ?)", (nom, code_postal, dept_id))
+        # Génération de la réponse JSON avec le lien de la ville nouvellement créée
+        reponse_json = jsonify({
+            "_links": [{
+                "href": f"/departements/{dept_id}/villes/" + urllib.parse.quote(nom),
+                "rel": "self"
+            }]
+        })
+        return reponse_json, 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/villes/<int:id>', methods=['DELETE'])
+def delete_ville(id):
+    execute_query("DELETE FROM villes WHERE id = ?", (id,))
+    return jsonify({"message": "Ville supprimée"}), 204
+
+
+
 if __name__ == '__main__':
     # define the localhost ip and the port that is going to be used
     app.run(host='0.0.0.0', port=5000)
