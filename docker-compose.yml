@@ -26,4 +26,4 @@ services:
         depends_on:
             - mariadb
         ports:
-            - 8080:8080
+            - 8081:8080

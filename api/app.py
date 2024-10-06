@@ -182,6 +182,38 @@ def delete_departement(code_dpt):
     execute_query("delete from departements where code=?", (code_dpt, ))
     return "", 204
 
+""" ################## VILLES ##################
+    #############################################"""
+
+@app.route('/departements/<string:code_dpt>/villes')
+def get_villes_for_departement(code_dpt):
+    """Récupère les villes d'un département"""
+    villes = execute_query("""select villes.nom, villes.code
+                              from villes
+                              join departements on villes.departement_id = departements.id
+                              where departements.code = ?""", (code_dpt,))
+    if villes == []:
+        abort(404, "Aucune ville dans ce département")
+    for i in range(len(villes)):
+        villes[i]["_links"] = [{
+            "href": "/villes/" + villes[i]["code"],
+            "rel": "self"
+        }]
+    return jsonify(villes), 200
+
+@app.route('/departements/<string:code_dpt>/villes', methods=['POST'])
+def post_ville_for_departement(code_dpt):
+    """Créer une nouvelle ville pour un département donné"""
+    code_ville = request.args.get("code")
+    nom_ville = request.args.get("nom")
+    execute_query("insert into villes (code, nom, departement_id) values (?, ?, (select id from departements where code = ?))", (code_ville, nom_ville, code_dpt))
+    reponse_json = jsonify({
+        "_links": [{
+            "href": "/villes/" + code_ville,
+            "rel": "self"
+        }]
+    })
+    return reponse_json, 201  # created
 
 if __name__ == '__main__':
     # define the localhost ip and the port that is going to be used
