@@ -188,12 +188,6 @@ def delete_departement(code_dpt):
 
 """Endpoints pour les VILLES opérations CRUD"""
 
-# GET pour récupérer toutes les villes d'un département
-@app.route('/departements/<int:dept_id>/villes')
-def get_villes(dept_id):
-    villes = execute_query("SELECT * FROM villes WHERE departement_id = ?", (dept_id,))
-    return jsonify(villes)
-
 # POST pour ajouter une nouvelle ville à un département
 @app.route('/departements/<int:dept_id>/villes', methods=['POST'])
 def add_ville(dept_id):
@@ -217,11 +211,19 @@ def add_ville(dept_id):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/villes/<int:id>', methods=['DELETE'])
-def delete_ville(id):
-    execute_query("DELETE FROM villes WHERE id = ?", (id,))
-    return jsonify({"message": "Ville supprimée"}), 204
+# GET pour récupérer toutes les villes d'un département
+@app.route('/departements/<int:dept_id>/villes/<string:nom_ville>')
+def get_ville(dept_id, nom_ville):
+    ville = execute_query("SELECT * FROM villes WHERE departement_id = ? AND nom = ?", (dept_id, nom_ville))
+    if not ville:
+        abort(404, description="Ville non trouvée")
+    return jsonify(ville), 200
 
+# GET pour récupérer toutes les villes d'un département spécifique
+@app.route('/departements/<int:dept_id>/villes')
+def get_villes(dept_id):
+    villes = execute_query("SELECT * FROM villes WHERE departement_id = ?", (dept_id,))
+    return jsonify(villes)
 
 
 if __name__ == '__main__':
