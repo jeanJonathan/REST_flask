@@ -105,18 +105,17 @@ def get_departements_for_region(nom: str):
 
 @app.route('/regions', methods=['POST'])
 def post_region():
-    """"Ajoute une région"""
-    code = int(request.args.get("code"))
-    nom = request.args.get("nom")
+    data = request.get_json()  # On récupère les données JSON de la requête
+    code = data['code']
+    nom = data['nom']
     execute_query("insert into regions (code, nom) values (?,?)", (code, nom))
-    # on renvoi le lien de la région que l'on vient de créer
     reponse_json = jsonify({
         "_links": [{
             "href": "/regions/" + urllib.parse.quote(nom),
             "rel": "self"
         }]
     })
-    return reponse_json, 201  # created
+    return reponse_json, 201
 
 
 @app.route('/regions/<string:nom_region>/departements', methods=['POST'])
