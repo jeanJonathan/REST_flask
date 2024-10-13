@@ -20,6 +20,7 @@ services:
             MYSQL_PASSWORD: maria
         volumes:
             - ./mariadb:/var/lib/mysql
+            - ./database:/docker-entrypoint-initdb.d  
     adminer:
         image: adminer
         container_name: adminer
